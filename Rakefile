@@ -5,7 +5,9 @@ namespace :data do
     tmp = Dir.mktmpdir "coder"
     puts tmp
     Dir.glob("*").each do |f|
-      File.write "#{tmp}/#{f}", `./tokenizer #{f}`
+      input = f
+      output = "#{tmp}/#{input}"
+      `./tokenizer #{input} #{output}`
     end
   end
 
