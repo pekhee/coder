@@ -1,0 +1,41 @@
+#!/usr/bin/env ruby
+require "json"
+
+INPUT  = ARGV.pop
+puts INPUT
+
+SPLIT_ON = " "
+
+Line = Struct.new :number, :line do
+  def to_h
+    { number: number, line: line }
+  end
+end
+
+Word = Struct.new :line, :number, :word do
+  def to_h
+    { line: line.to_h, number: number, word: word }
+  end
+end
+
+def parse_file_to_lines lines
+  i = 0
+  lines.map do |s|
+    i = i + 1
+    Line.new(i, s)
+  end
+end
+
+def parse_line_to_words line
+  j = 0
+  line.line.split(SPLIT_ON).map do |w|
+    j = j + 1
+    Word.new(line, j, w)
+  end
+end
+
+data = File.readlines INPUT
+lines = parse_file_to_lines data
+words = lines.flat_map {|l| parse_line_to_words l}
+
+puts JSON.generate words.map {|w| w.to_h}
